@@ -12,7 +12,7 @@ stemmer = PorterStemmer()
 '''
 Read's each line and obtains the words, separated by spaces and
 places in dictionary (wordcount).
-Case and punctuation are distinct. (Should I remove?)
+Case and punctuation are distinct. 
 Also how to stratify? All fake together? Separate by pos/neg? Probably test both.
 '''
 translator = str.maketrans('', '', string.punctuation)
@@ -98,6 +98,7 @@ for i in range (1,6):
                         exclaimFake = exclaimFake + 1
                         exclaimPosFake = exclaimPosFake + 1
 '''
+#Extracts the 'stem' word from the words 
 def stem(text):
     text_stem = [stemmer.stem(token) for token in text.split(' ')]
     text_stem_join = ' '.join(text_stem)
@@ -118,7 +119,7 @@ for i in range (1,6):
             #reviewSent = review.replace("!", ".").split(".")
             reviewSent = nltk.sent_tokenize(review)
             reviews.append(reviewSent)
-
+#Chooses a random review from a list of reviews 
 baseReview = random.choice(reviews)
 baseReviewString = ' '.join(baseReview)
 #print(baseReviewToken)
@@ -126,9 +127,9 @@ baseReviewString = ' '.join(baseReview)
 sentencePool = nltk.sent_tokenize(sentencePoolString)
 
 '''
-WHY WONT IT REMOVE THE SENTENCES FROM THE BASE REVIEW?!?!
-'''
 
+'''
+#differentiates between the sentences in the pool with the sentences in the base review 
 for sentence in baseReview:
     if sentence in sentencePool:
         sentencePool.remove(sentence)
@@ -138,6 +139,7 @@ print(baseReviewString)
 newReview = ""
 
 index_list = []
+#transforms sentences into a vector, and then tries to find other sentences that are similar 
 for sentence in baseReview:
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
     tfidf_matrix = tfidf_vectorizer.fit_transform([sentence] + sentencePool)
@@ -147,6 +149,7 @@ for sentence in baseReview:
     index = 0
     count = 0
     #print(arr[0][0])
+    #Replace based on how similar the sentences are (when converted to vectors, find the cosine similarity)
     for item in arr[0]:
         #print(count, item)
         if item < .99 and item > max and count not in index_list:
