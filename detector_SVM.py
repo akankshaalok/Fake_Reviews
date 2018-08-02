@@ -2,6 +2,7 @@ from sklearn import svm
 import random
 '''
 Used to read in X matrix (data set).
+Data saved locally (contains data that may/may not be publically shared : from Amazon Turk)
 '''
 with open("./spambase/spambase.data", 'r') as fobj:
     X = [[float(num) for num in line.split(',')] for line in fobj]
@@ -10,6 +11,7 @@ random.shuffle(X)
 
 '''
 Used to read in Y vector (attribute names).
+Attributes are the features that we are looking at from each line 
 '''
 y = []
 for row in X:
@@ -26,12 +28,12 @@ wordX = []
 for row in X:
     wordX.append(row[:48])
 
-#Training calssifier on first 4000 samples
+#Training classifier on first 4000 samples (using Support Vector Model)
 clfWord = svm.SVC()
 clfWord.fit(wordX[0:4000], y[0:4000])
 testWordX = clfWord.predict(wordX[4000:])
 
-#Obtaining prediction accuracy and false positive rate
+#Obtaining prediction accuracy and false positive rate (Does the predicted match the actual?)
 countWord = 0
 countWordFalse = 0
 for i in range(len(testWordX)):
@@ -45,7 +47,8 @@ print("Percent spam = " + str(countWord/len(y[4000:])))
 print("Percent false positive = " + str(countWordFalse/len(y[4000:])))
 print()
 #-------------------------------------------------------
-#Obtaining only char attributes
+#Trying out different combinations of features to see which yields best results (most accuracy, low false positive rate)
+#Obtaining only char attributes for training 
 charX = []
 for row in X:
     charX.append(row[48:54])
@@ -165,7 +168,7 @@ print("Percent false positive = " + str(countCharCapFalse/len(y[4000:])))
 print()
 
 #-----------------------------------------------------
-#All attributes
+#All attributes combined 
 #Training classifier on first 4000 samples
 clf = svm.SVC()
 clf.fit(X[0:4000], y[0:4000])
